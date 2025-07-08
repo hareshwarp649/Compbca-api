@@ -14,7 +14,11 @@ namespace bca.api.Infrastructure.IRepository
         Task<bool> AddManyAsync(IEnumerable<T> entities);
         Task<T?> UpdateAsync(T entity);
         Task UpdateRangeAsync(IEnumerable<T> entities);
+      
         Task<bool> DeleteAsync(int id);
+
+        //void Update(T entity);
+        Task<int> SaveChangesAsync();
         Task RemoveManyToManyAsync<TJoin>(Expression<Func<TJoin, bool>> predicate) where TJoin : class;
     }
 }

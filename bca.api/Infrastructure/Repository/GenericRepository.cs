@@ -132,6 +132,12 @@ namespace bca.api.Infrastructure.Repository
             return true;
         }
 
+        
+        public async Task<int> SaveChangesAsync()
+        {
+            return await _context.SaveChangesAsync();
+        }
+
         public async Task RemoveManyToManyAsync<TJoin>(Expression<Func<TJoin, bool>> predicate) where TJoin : class
         {
             var entities = _context.Set<TJoin>().Where(predicate);

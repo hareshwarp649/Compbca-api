@@ -153,33 +153,7 @@
                 .WithMany()
                 .HasForeignKey(l => l.RoleId)
                 .OnDelete(DeleteBehavior.Restrict);
-
-          
-                
-
-    
-            // UBGB_Bank
-
-            //builder.Entity<DailyTransactionUBGB>()
-            //   .HasOne(dt => dt.BCAUser)
-            //   .WithMany()
-            //   .HasForeignKey(dt => dt.BCAUserId)
-            //   .OnDelete(DeleteBehavior.Restrict);
-
-            //builder.Entity<DailyTransactionUBGB>()
-            //    .HasOne(dt => dt.Bank)
-            //    .WithMany()
-            //    .HasForeignKey(dt => dt.BankId)
-            //    .OnDelete(DeleteBehavior.Restrict);
-
-            //builder.Entity<DailyTransactionUBGB>()
-            //    .HasIndex(dt => new { dt.KOCode, dt.BankId, dt.TransactionDate })
-            //    .IsUnique();
-
-          
-
-
-           
+       
         }
 
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }
@@ -195,13 +169,18 @@
 
         public DbSet<Employee> Employees { get; set; }
         public DbSet<EmployeeDocument> EmployeeDocuments { get; set; }
-        
-        //public DbSet<ExceptionLog> ExceptionLogs { get; set; }
-       
-       // public DbSet<Department> Departments { get; set; }
 
-        
-      
+        public DbSet<HomeMaster> HomeMasters { get; set; }
+
+        public DbSet<AboutUs> AboutsUs { get; set; }
+        public DbSet<ContactUs> ContactsUs { get; set; }
+        public DbSet<SelectService> SelectServices { get; set; }
+        public DbSet<IndianClientLogo> IndianClientLogos { get; set; }
+        public DbSet<InternationalClientLogo> InternationalClientLogos { get; set; }
+        public DbSet<ClientTestimonial> ClientTestimonials { get; set; }
+        public DbSet<IndianClient> IndianClients { get; set; }
+
+
     }
 
 }

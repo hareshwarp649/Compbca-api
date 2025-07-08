@@ -83,6 +83,7 @@ builder.Services.AddScoped<IPermissionRepository, PermissionRepository>();
 builder.Services.AddScoped<IRolePermissionRepository, RolePermissionRepository>();
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 builder.Services.AddScoped<IUserRoleRepository, UserRoleRepository>();
+builder.Services.AddScoped<IHomeMasterRepository, HomeMasterRepository>();
 //builder.Services.AddScoped<IExceptionLogRepository, ExceptionLogRepository>();
 
 //builder.Services.AddScoped<IProductRepository, ProductRepository>();
@@ -100,6 +101,7 @@ builder.Services.AddScoped<IUserContextService,  UserContextService>();
 builder.Services.AddScoped<IUserDocumentService, UserDocumentService>();
 builder.Services.AddScoped<IUserRoleService, UserRoleService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IHomeMasterService, HomeMasterService>();
 
 //builder.Services.AddScoped<IDepartmentService, DepartmentService>();
 //builder.Services.AddScoped<IProductService, ProductService>();
