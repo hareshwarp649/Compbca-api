@@ -20,7 +20,7 @@ namespace bca.api.Data.Entities
         [Required]
         public string? Title { get; set; }
 
-        [MaxLength(300)]
-        public string? Description { get; set; }
+        //public string? Description { get; set; }
+
     }
 }

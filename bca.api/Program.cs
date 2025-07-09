@@ -84,9 +84,17 @@ builder.Services.AddScoped<IRolePermissionRepository, RolePermissionRepository>(
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 builder.Services.AddScoped<IUserRoleRepository, UserRoleRepository>();
 builder.Services.AddScoped<IHomeMasterRepository, HomeMasterRepository>();
+builder.Services.AddScoped<IAboutUsRepository, AboutUsRepository>();
+builder.Services.AddScoped<IIndianClientLogoRepository, IndianClientLogoRepository>();
+builder.Services.AddScoped<IInternationalClientLogoRepository, InternationalClientLogoRepository>();
+builder.Services.AddScoped<IWorkingGalleryRepository, WorkingGalleryRepository>();
+builder.Services.AddScoped<ISelectServiceRepository, SelectServiceRepository>();
+builder.Services.AddScoped<IContactUsRepository, ContactUsRepository>();
+builder.Services.AddScoped<IClientTestimonialRepository, ClientTestimonialRepository>();
+builder.Services.AddScoped<IIndianClientRepository, IndianClientRepository>();
 //builder.Services.AddScoped<IExceptionLogRepository, ExceptionLogRepository>();
 
-//builder.Services.AddScoped<IProductRepository, ProductRepository>();
+
 
 // Register Service
 
@@ -102,9 +110,18 @@ builder.Services.AddScoped<IUserDocumentService, UserDocumentService>();
 builder.Services.AddScoped<IUserRoleService, UserRoleService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IHomeMasterService, HomeMasterService>();
+builder.Services.AddScoped<IAboutUsService, AboutUsService>();
+builder.Services.AddScoped<IIndianClientLogoService, IndianClientLogoService>();
+builder.Services.AddScoped<IInternationalClientLogoService, InternationalClientLogoService>();
+builder.Services.AddScoped<IWorkingGalleryService, WorkingGalleryService>();
+builder.Services.AddScoped<ISelectServiceService, SelectServiceService>();
+builder.Services.AddScoped<IContactUsService, ContactUsService>();
+builder.Services.AddScoped<IClientTestimonialService, ClientTestimonialService>();
+builder.Services.AddScoped<IIndianClientService, IndianClientService>();
 
-//builder.Services.AddScoped<IDepartmentService, DepartmentService>();
-//builder.Services.AddScoped<IProductService, ProductService>();
+//builder.Services.AddScoped<IContactUsService, ContactUsService>();
+
+
 
 
 

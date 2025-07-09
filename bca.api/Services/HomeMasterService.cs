@@ -1,4 +1,5 @@
 ﻿using bca.api.Data.Entities;
+using bca.api.DTOs;
 using bca.api.Helpers;
 using bca.api.Infrastructure.IRepository;
 using Microsoft.EntityFrameworkCore;
@@ -9,177 +10,130 @@ namespace bca.api.Services
     {
         private readonly IHomeMasterRepository _repo;
         private readonly IWebHostEnvironment _env;
-        public HomeMasterService(IHomeMasterRepository repo, IWebHostEnvironment env)
+        private readonly IHttpContextAccessor _http;
+
+        public HomeMasterService(IHomeMasterRepository repo, IWebHostEnvironment env, IHttpContextAccessor http)
         {
             _repo = repo;
             _env = env;
+            _http = http;
         }
 
-        public async Task<IEnumerable<HomeMaster>> GetAllAsync()
+        private string GetBaseUrl() =>
+            $"{_http.HttpContext?.Request.Scheme}://{_http.HttpContext?.Request.Host}";
+
+        private async Task<string?> SaveFileAsync(IFormFile? file, string folderName)
         {
-            return await _repo.GetAllAsync();
+            if (file == null) return null;
+
+            string folder = Path.Combine(_env.WebRootPath, folderName);
+            if (!Directory.Exists(folder)) Directory.CreateDirectory(folder);
+
+            string fileName = $"{Guid.NewGuid()}_{file.FileName}";
+            string path = Path.Combine(folder, fileName);
+
+            using var stream = new FileStream(path, FileMode.Create);
+            await file.CopyToAsync(stream);
+
+            return $"{GetBaseUrl()}/{folderName}/{fileName}";
         }
 
-        public async Task<HomeMaster?> GetByIdAsync(int id)
+        public async Task<HomeMaster> UploadAsync(HomeMasterUploadDTO dto)
         {
-            return await _repo.GetByIdAsync(id, h => h.WorkingGalleries);
+            var bannerUrl = await SaveFileAsync(dto.BannerImage, "banners");
+            var teamImageUrl = await SaveFileAsync(dto.TeamGroupImage, "teams");
+
+            var home = new HomeMaster
+            {
+                MainTitle = dto.MainTitle,
+                SubTitle = dto.SubTitle,
+                AboutCompany = dto.AboutCompany,
+                WhyChooseUs = dto.WhyChooseUs,
+                YearsOfExperience = dto.YearsOfExperience,
+                ServiceHighlightOne = dto.ServiceHighlightOne,
+                ServiceHighlightTwo = dto.ServiceHighlightTwo,
+                ServiceHighlightThree = dto.ServiceHighlightThree,
+                CustomerReviewSectionTitle = dto.CustomerReviewSectionTitle,
+                FeaturedProductSectionTitle = dto.FeaturedProductSectionTitle,
+                TeamDescription = dto.TeamDescription,
+                BannerImageUrl = bannerUrl,
+                TeamGroupImageUrl = teamImageUrl,
+                WorkingGalleries = await Task.WhenAll(dto.GalleryImages.Select(async img =>
+                {
+                    var imageUrl = await SaveFileAsync(img, "working-gallery");
+                    return new WorkingGallery { MediaUrl = imageUrl };
+                })).ContinueWith(t => t.Result.ToList()),
+                CreatedAt = DateTime.UtcNow
+            };
+
+            return await _repo.AddAsync(home);
         }
 
-
-        public async Task<HomeMaster> CreateAsync(HomeMaster home)
+        public async Task<HomeMaster?> UpdateAsync(int id, HomeMasterUploadDTO dto)
         {
-            await _repo.AddAsync(home);
-            await _repo.SaveChangesAsync();
-            return home;
-        }
-
-        
-        public async Task<bool> DeleteAsync(int id)
-        {
-             return await _repo.DeleteAsync(id);
-
-
-            //var entity = await _repo.GetByIdAsync(id);
-            //if (entity == null) return false;
-
-            //// Delete images
-            //DeleteImage(entity.BannerImageUrl);
-            //DeleteImage(entity.TeamGroupImageUrl);
-
-            //return await _repo.DeleteAsync(id);
-
-        }
-        public async Task<HomeMaster?> UpdateAsync(HomeMaster home)
-        {
-            var existing = await _repo.GetByIdAsync(home.Id);
+            var existing = await _repo.GetByIdAsync(id);
             if (existing == null) return null;
 
-            await _repo.UpdateAsync(home);
-            await _repo.SaveChangesAsync();
-            return home;
-        }
+            existing.MainTitle = dto.MainTitle;
+            existing.SubTitle = dto.SubTitle;
+            existing.AboutCompany = dto.AboutCompany;
+            existing.WhyChooseUs = dto.WhyChooseUs;
+            existing.YearsOfExperience = dto.YearsOfExperience;
+            existing.ServiceHighlightOne = dto.ServiceHighlightOne;
+            existing.ServiceHighlightTwo = dto.ServiceHighlightTwo;
+            existing.ServiceHighlightThree = dto.ServiceHighlightThree;
+            existing.CustomerReviewSectionTitle = dto.CustomerReviewSectionTitle;
+            existing.FeaturedProductSectionTitle = dto.FeaturedProductSectionTitle;
+            existing.TeamDescription = dto.TeamDescription;
 
-        //public async Task<bool> UploadBannerImageAsync(int homeId, IFormFile image)
-        //{
-        //    var entity = await _repo.GetByIdAsync(homeId);
-        //    if (entity == null || image == null) return false;
+            if (dto.BannerImage != null)
+                existing.BannerImageUrl = await SaveFileAsync(dto.BannerImage, "banners");
 
-        //    var fileName = await SaveImage(image, "banner");
-        //    entity.BannerImageUrl = $"/images/banner/{fileName}";
+            if (dto.TeamGroupImage != null)
+                existing.TeamGroupImageUrl = await SaveFileAsync(dto.TeamGroupImage, "teams");
 
-        //    await _repo.UpdateAsync(entity);
-        //    await _repo.SaveChangesAsync();
-        //    return true;
-        //}
-
-        //public async Task<bool> UploadTeamImageAsync(int homeId, IFormFile image)
-        //{
-        //    var entity = await _repo.GetByIdAsync(homeId);
-        //    if (entity == null || image == null) return false;
-
-        //    var fileName = await SaveImage(image, "team");
-        //    entity.TeamGroupImageUrl = $"/images/team/{fileName}";
-
-        //    await _repo.UpdateAsync(entity);
-        //    await _repo.SaveChangesAsync();
-        //    return true;
-
-
-        //}
-
-        //private async Task<string> SaveImage(IFormFile file, string folder)
-        //{
-        //    var path = Path.Combine("wwwroot", "images", folder);
-        //    Directory.CreateDirectory(path);
-
-        //    var fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
-        //    var fullPath = Path.Combine(path, fileName);
-
-        //    using var stream = new FileStream(fullPath, FileMode.Create);
-        //    await file.CopyToAsync(stream);
-
-        //    return fileName;
-        //}
-        //private void DeleteImage(string? imagePath)
-        //{
-        //    if (string.IsNullOrWhiteSpace(imagePath)) return;
-
-        //    var fullPath = Path.Combine("wwwroot", imagePath.TrimStart('/'));
-        //    if (File.Exists(fullPath))
-        //    {
-        //        File.Delete(fullPath);
-        //    }
-        //}
-
-        //--------------------------------------------------------
-
-
-        //public void RemoveBanerImage(HomeMaster home)
-        //{
-        //    if (home.BannerImageUrl is { })
-        //        ImageHelper.RemoveImage("homes", home.BannerImageUrl);
-        //}
-
-        //public async Task<string> UpdateBanerImageAsync(IFormFile img, HomeMaster home, HttpRequest request)
-        //{
-        //    string folder = "homes";
-        //    string fileName = await ImageHelper
-        //        .UploadImageAsync(img, folder, $"airline-{home.Id}-logo");
-        //    var serverUrl = $"{request.Scheme}://{request.Host.Value}";
-        //    var imageUrl = $"{serverUrl}/imgs/{folder}/{fileName}";
-
-        //    return imageUrl;
-
-
-        public async Task<HomeMaster> UploadImageAsync(IFormFile file)
-        {
-            var fileName = $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
-            var folderPath = Path.Combine(_env.WebRootPath, "uploads");
-
-            if (!Directory.Exists(folderPath)) Directory.CreateDirectory(folderPath);
-
-            var filePath = Path.Combine(folderPath, fileName);
-
-            using (var stream = new FileStream(filePath, FileMode.Create))
+            if (dto.GalleryImages != null && dto.GalleryImages.Any())
             {
-                await file.CopyToAsync(stream);
+                // Optional: delete old image files from disk
+                foreach (var oldGallery in existing.WorkingGalleries)
+                {
+                    var path = oldGallery.MediaUrl.Replace(GetBaseUrl(), _env.WebRootPath).Replace("/", "\\");
+                    if (File.Exists(path)) File.Delete(path);
+                }
+
+                // Clear existing galleries
+                existing.WorkingGalleries.Clear();
+
+                // Upload new gallery images
+                var newGalleries = await Task.WhenAll(dto.GalleryImages.Select(async img =>
+                {
+                    var url = await SaveFileAsync(img, "working-gallery");
+                    return new WorkingGallery { MediaUrl = url };
+                }));
+
+                existing.WorkingGalleries = newGalleries.ToList();
             }
 
-            var image = new HomeMaster { BannerImageUrl = fileName }; //FilePath = $"/uploads/{fileName}"
-            return await _repo.AddAsync(image);
+
+            return await _repo.UpdateAsync(existing);
         }
 
-        public async Task<HomeMaster?> UpdateImageAsync(int id, IFormFile file)
+        public async Task<IEnumerable<HomeMaster>> GetAllAsync() => await _repo.GetAllAsync();
+        public async Task<HomeMaster?> GetByIdAsync(int id) => await _repo.GetByIdAsync(id);
+        
+
+        public async Task<bool> DeleteAsync(int id)
         {
-            var image = await _repo.GetByIdAsync(id);
-            if (image == null) return null;
-
-            var oldPath = Path.Combine(_env.WebRootPath, "uploads", image.BannerImageUrl);
-            if (File.Exists(oldPath)) File.Delete(oldPath);
-
-            var newFileName = $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
-            var newFilePath = Path.Combine(_env.WebRootPath, "uploads", newFileName);
-
-            using (var stream = new FileStream(newFilePath, FileMode.Create))
-            {
-                await file.CopyToAsync(stream);
-            }
-
-            image.BannerImageUrl = newFileName;
-            image.BannerImageUrl = $"/uploads/{newFileName}";
-            return await _repo.UpdateAsync(image);
-        }
-
-        public async Task<bool> DeleteImageAsync(int id)
-        {
-            var image = await _repo.GetByIdAsync(id);
-            if (image == null) return false;
-
-            var path = Path.Combine(_env.WebRootPath, "uploads", image.BannerImageUrl);
-            if (File.Exists(path)) File.Delete(path);
+            var existing = await _repo.GetByIdAsync(id);
+            if (existing == null) return false;
 
             return await _repo.DeleteAsync(id);
         }
+
+        //public async Task<HomeMaster?> GetByIdWithGalleryAsyncs(int id)
+        //{
+        //    return await _repo.GetByIdWithGalleryAsync(id);
+        //}
     }
 }
 

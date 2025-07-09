@@ -14,11 +14,14 @@ namespace bca.api.Infrastructure.Repository
             _context = context;
         }
 
-        public async Task<HomeMaster?> GetFullHomePageAsync(int id)
+        public async Task<HomeMaster?> GetByIdWithGalleryAsync(int id)
         {
             return await _context.HomeMasters
             .Include(h => h.WorkingGalleries)
             .FirstOrDefaultAsync(h => h.Id == id);
+
+            
+
         }
     }
 }

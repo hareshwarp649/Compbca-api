@@ -15,7 +15,7 @@ namespace bca.api.Data.Entities
 
         public string? BannerImageUrl { get; set; }
 
-        [Required]
+        //[Required]
         public string AboutCompany { get; set; }
 
         [MaxLength(300)]
@@ -42,8 +42,9 @@ namespace bca.api.Data.Entities
         public string? TeamDescription { get; set; }
 
         // ✅ Working Gallery Section
-        public ICollection<WorkingGallery> WorkingGalleries { get; set; }
+        public ICollection<WorkingGallery> WorkingGalleries { get; set; }= new List<WorkingGallery>();
 
+        
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
 

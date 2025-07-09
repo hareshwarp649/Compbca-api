@@ -45,7 +45,7 @@ namespace bca.api.Controllers
 
             return Ok(new { message = "SPOC registered successfully!" });
         }
-
+        [AllowAnonymous]
         [HttpPost("register-admin")]
         public async Task<IActionResult> RegisterAdmin([FromBody] RegisterAdminModel model)
         {

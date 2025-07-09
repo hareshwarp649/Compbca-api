@@ -67,6 +67,24 @@ namespace bca.api.Helpers
             CreateMap<Permission, PermissionDTO>();
             CreateMap<Role, RoleDTO>();
 
+
+            CreateMap<WorkingGallery, WorkingGalleryUploadDTO>();
+            CreateMap<HomeMaster, HomeMasterUploadDTO>();
+
+
+
+            CreateMap<ContactUsCreateDTO, ContactUs>();
+            CreateMap<ContactUs, ContactUsDTO>()
+                .ForMember(dest => dest.SelectServiceName, opt => opt.MapFrom(src => src.SelectService.ServiceName));
+
+            CreateMap<SelectService, SelectServiceDTO>().ReverseMap();
+
+
+            CreateMap<ClientTestimonial, ClientTestimonialDTO>();
+
+            CreateMap<IndianClientCreateDTO, IndianClient>();
+            CreateMap<IndianClient, IndianClientDTO>();
+
             //CreateMap<TeamDTO, Team>().ReverseMap();
             //CreateMap<DepartmentDTO, Department>().ReverseMap();
 

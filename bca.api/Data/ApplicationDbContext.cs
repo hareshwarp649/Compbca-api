@@ -180,6 +180,8 @@
         public DbSet<ClientTestimonial> ClientTestimonials { get; set; }
         public DbSet<IndianClient> IndianClients { get; set; }
 
+        public DbSet<WorkingGallery> WorkingGalleries { get; set; }
+
 
     }
 

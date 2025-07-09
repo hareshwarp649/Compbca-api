@@ -1,25 +1,16 @@
 ﻿using bca.api.Data.Entities;
+using bca.api.DTOs;
 
 namespace bca.api.Services
 {
     public interface IHomeMasterService
     {
-        Task<HomeMaster?> GetByIdAsync(int id);
+
+        Task<HomeMaster> UploadAsync(HomeMasterUploadDTO dto);
+        Task<HomeMaster?> UpdateAsync(int id, HomeMasterUploadDTO dto);
         Task<IEnumerable<HomeMaster>> GetAllAsync();
-        Task<HomeMaster> CreateAsync(HomeMaster home);
-        Task<HomeMaster?> UpdateAsync(HomeMaster home);
+        Task<HomeMaster?> GetByIdAsync(int id);
         Task<bool> DeleteAsync(int id);
-
-        //Task<bool> UploadBannerImageAsync(int homeId, IFormFile image);
-        //Task<bool> UploadTeamImageAsync(int homeId, IFormFile image);
-
-        //Task<IEnumerable<HomeMaster>> GetAllImagesAsync();
-        //Task<HomeMaster?> GetImageByIdAsync(int id);
-        Task<HomeMaster> UploadImageAsync(IFormFile file);
-        Task<HomeMaster?> UpdateImageAsync(int id, IFormFile file);
-        Task<bool> DeleteImageAsync(int id);
-
-        //Task<string> UpdateBanerImageAsync(IFormFile img, HomeMaster home, HttpRequest request);
-        //void RemoveBanerImage(HomeMaster home);
+        //Task GetByIdWithGalleryAsyncs(int id);
     }
 }

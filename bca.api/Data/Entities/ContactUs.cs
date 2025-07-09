@@ -15,10 +15,8 @@ namespace bca.api.Data.Entities
         public string LastName { get; set; }
 
         [Required]
-        [EmailAddress]
         public string Email { get; set; }
 
-        [Phone]
         public string PhoneNumber { get; set; }
 
         [Required]

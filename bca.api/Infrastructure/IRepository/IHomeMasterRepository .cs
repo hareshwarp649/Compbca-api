@@ -7,7 +7,7 @@ namespace bca.api.Infrastructure.IRepository
 {
     public interface IHomeMasterRepository : IGenericRepository<HomeMaster>
     {
-        Task<HomeMaster?> GetFullHomePageAsync(int id);
+        Task<HomeMaster?> GetByIdWithGalleryAsync(int id);
        
     }
 }

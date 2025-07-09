@@ -170,6 +170,9 @@ namespace bca.api.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("FilePath")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("ImageUrl")
                         .HasColumnType("nvarchar(max)");
 
@@ -834,10 +837,6 @@ namespace bca.api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Description")
-                        .HasMaxLength(300)
-                        .HasColumnType("nvarchar(300)");
-
                     b.Property<int>("HomeMasterId")
                         .HasColumnType("int");
 
@@ -853,7 +852,7 @@ namespace bca.api.Migrations
 
                     b.HasIndex("HomeMasterId");
 
-                    b.ToTable("WorkingGallery");
+                    b.ToTable("WorkingGalleries");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
